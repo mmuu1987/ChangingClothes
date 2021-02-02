@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<CommonTag>
+  <LOG_LEVENL>3</LOG_LEVENL>
+  <RoleInfos>
+    <Role1 id="0" Name="将军" BodyScale="0.95" ArmScale="1.1" LegScale="1" Vertacal="0.12" Farward="0" HatHeight="0.06" />
+    <Role2 id="1" Name="文官" BodyScale="1" ArmScale="1" LegScale="1.25" Vertacal="0.105" Farward="0" HatHeight="-0.01" />
+    <Role3 id="2" Name="宫女" BodyScale="1.2" ArmScale="1.15" LegScale="1.05" Vertacal="0.01" Farward="0" HatHeight="0.04" />
+    <Role4 id="3" Name="侍女" BodyScale="1.1" ArmScale="1" LegScale="1" Vertacal="0" Farward="0" HatHeight="0.042" />
+  </RoleInfos>
+</CommonTag>

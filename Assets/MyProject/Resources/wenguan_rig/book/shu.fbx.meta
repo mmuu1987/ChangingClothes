@@ -1,0 +1,245 @@
+fileFormatVersion: 2
+guid: 169e160c99068de4fabbe54021a07fc6
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: joint1
+    100002: nurbsCircle1
+    100004: polySurface25shu_fengxiangroup18
+    100006: pPlane13shu_yegroup18
+    100008: //RootNode
+    100010: shu1
+    100012: shu_fengxiangroup18polySurface26
+    100014: shu_fengxiangroup18polySurface27
+    100016: shu_fengxiangroup18polySurface28
+    100018: shu_fengxiangroup18polySurface29
+    100020: shu_fengxiangroup18polySurface30
+    100022: shu_fengxiangroup18polySurface31
+    100024: shu_fengxiangroup18polySurface32
+    100026: shu_fengxiangroup18polySurface33
+    100028: shu_fengxiangroup18polySurface34
+    100030: shu_fengxiangroup18polySurface35
+    100032: shu_fengxiangroup18polySurface36
+    100034: shu_yegroup18polySurface37
+    100036: shu_yegroup18pPlane14
+    100038: shu_yegroup18pPlane15
+    100040: shu_yegroup18pPlane16
+    100042: shu_yegroup18pPlane17
+    100044: shu_yegroup18pPlane18
+    100046: shu_yegroup18pPlane19
+    100048: shu_yegroup18pPlane20
+    100050: shu_yegroup18pPlane21
+    100052: shu_yegroup18pPlane22
+    100054: shu_yegroup18pPlane23
+    100056: shusheng
+    100058: shuye
+    100060: shuye1
+    400000: joint1
+    400002: nurbsCircle1
+    400004: polySurface25shu_fengxiangroup18
+    400006: pPlane13shu_yegroup18
+    400008: //RootNode
+    400010: shu1
+    400012: shu_fengxiangroup18polySurface26
+    400014: shu_fengxiangroup18polySurface27
+    400016: shu_fengxiangroup18polySurface28
+    400018: shu_fengxiangroup18polySurface29
+    400020: shu_fengxiangroup18polySurface30
+    400022: shu_fengxiangroup18polySurface31
+    400024: shu_fengxiangroup18polySurface32
+    400026: shu_fengxiangroup18polySurface33
+    400028: shu_fengxiangroup18polySurface34
+    400030: shu_fengxiangroup18polySurface35
+    400032: shu_fengxiangroup18polySurface36
+    400034: shu_yegroup18polySurface37
+    400036: shu_yegroup18pPlane14
+    400038: shu_yegroup18pPlane15
+    400040: shu_yegroup18pPlane16
+    400042: shu_yegroup18pPlane17
+    400044: shu_yegroup18pPlane18
+    400046: shu_yegroup18pPlane19
+    400048: shu_yegroup18pPlane20
+    400050: shu_yegroup18pPlane21
+    400052: shu_yegroup18pPlane22
+    400054: shu_yegroup18pPlane23
+    400056: shusheng
+    400058: shuye
+    400060: shuye1
+    2100000: lambert10
+    2100002: lambert9
+    2100004: lambert7
+    2100006: lambert11
+    2100008: A2
+    2100010: lambert14
+    2100012: lambert15
+    4300000: shu_yegroup18pPlane20
+    4300002: shu_yegroup18pPlane19
+    4300004: shu_yegroup18pPlane18
+    4300006: shu_yegroup18pPlane16
+    4300008: shu_yegroup18pPlane23
+    4300010: shu_yegroup18pPlane22
+    4300012: shu_yegroup18pPlane21
+    4300014: shu_yegroup18polySurface37
+    4300016: shu_yegroup18pPlane14
+    4300018: polySurface25shu_fengxiangroup18
+    4300020: shu_fengxiangroup18polySurface26
+    4300022: shu_fengxiangroup18polySurface27
+    4300024: shu_fengxiangroup18polySurface28
+    4300026: shu_fengxiangroup18polySurface29
+    4300028: shu_fengxiangroup18polySurface30
+    4300030: shu_fengxiangroup18polySurface31
+    4300032: shu_fengxiangroup18polySurface32
+    4300034: shu_fengxiangroup18polySurface33
+    4300036: shu_fengxiangroup18polySurface34
+    4300038: shu_fengxiangroup18polySurface35
+    4300040: shu_fengxiangroup18polySurface36
+    4300042: shu_yegroup18pPlane17
+    4300044: pPlane13shu_yegroup18
+    4300046: shu_yegroup18pPlane15
+    7400000: shu_rig
+    9500000: //RootNode
+    13700000: polySurface25shu_fengxiangroup18
+    13700002: pPlane13shu_yegroup18
+    13700004: shu_fengxiangroup18polySurface26
+    13700006: shu_fengxiangroup18polySurface27
+    13700008: shu_fengxiangroup18polySurface28
+    13700010: shu_fengxiangroup18polySurface29
+    13700012: shu_fengxiangroup18polySurface30
+    13700014: shu_fengxiangroup18polySurface31
+    13700016: shu_fengxiangroup18polySurface32
+    13700018: shu_fengxiangroup18polySurface33
+    13700020: shu_fengxiangroup18polySurface34
+    13700022: shu_fengxiangroup18polySurface35
+    13700024: shu_fengxiangroup18polySurface36
+    13700026: shu_yegroup18polySurface37
+    13700028: shu_yegroup18pPlane14
+    13700030: shu_yegroup18pPlane15
+    13700032: shu_yegroup18pPlane16
+    13700034: shu_yegroup18pPlane17
+    13700036: shu_yegroup18pPlane18
+    13700038: shu_yegroup18pPlane19
+    13700040: shu_yegroup18pPlane20
+    13700042: shu_yegroup18pPlane21
+    13700044: shu_yegroup18pPlane22
+    13700046: shu_yegroup18pPlane23
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: A2
+    second: {fileID: 2100000, guid: 714a1504e473fba41bd79366a411a3ea, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: lambert10
+    second: {fileID: 2100000, guid: f3988ae870b54dc4687a9f68f992d1b5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: lambert11
+    second: {fileID: 2100000, guid: e51e9a2d09b911d47a96507ca11c81c4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: lambert14
+    second: {fileID: 2100000, guid: b64930df3282a994085ab78656e22a02, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: lambert15
+    second: {fileID: 2100000, guid: 1350e129c1096f649a79e98c10d412f2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: lambert7
+    second: {fileID: 2100000, guid: 7b556299c79827d40aff98264b82ac5f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: lambert9
+    second: {fileID: 2100000, guid: 7c61b501b50a8284fbe4856458a35f0f, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 0.01
+    hasPreviousCalculatedGlobalScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

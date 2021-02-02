@@ -1,0 +1,24 @@
+fileFormatVersion: 2
+guid: 222f251b611000e4793a55b6caf1f80f
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: MF ShangHei (Noncommercial)
+  fontNames:
+  - MF ShangHei (Noncommercial)
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 13ebf3a9742470645ac6bfb361322fc7, type: 3}
+  - {fileID: 12800000, guid: 07e037ed4cd23e84d9cbd390921238bc, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

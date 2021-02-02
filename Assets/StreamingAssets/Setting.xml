@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<CommonTag>
+  <LOG_LEVENL>3</LOG_LEVENL>
+  <IP>192.168.1.205</IP>
+  <!--是否显示帧率信息,True为显示，False为不显示-->
+  <IsDebug>false</IsDebug>
+  <!--亮度-->
+  <Brightness>1.25</Brightness>
+  <!--饱和度-->
+  <Saturation>1.15</Saturation>
+  <!--对比度-->
+  <Contrast>1</Contrast>
+  <RoleInfos>
+    <Role1 id="0" Name="将军" BodyScale="1" ArmScale="1.1" LegScale="0.98" Vertacal="0.12" Farward="0" HatHeight="0.05" HeadScale ="1.2" ShiftingX="0" ShiftingY="-0.01" ShiftingZ="0.05"/>
+    <Role2 id="1" Name="文官" BodyScale="1" ArmScale="1" LegScale="1.25" Vertacal="0.105" Farward="0" HatHeight="-0.01" HeadScale ="1.05" ShiftingX="0" ShiftingY="0" ShiftingZ="0.06"/>
+    <Role3 id="2" Name="宫女" BodyScale="1.2" ArmScale="1.15" LegScale="1.05" Vertacal="-0.03" Farward="0" HatHeight="0.06" HeadScale ="1.1" ShiftingX="0.0" ShiftingY="0.00" ShiftingZ="0.06"/>
+    <Role4 id="3" Name="侍女" BodyScale="1.1" ArmScale="1" LegScale="1" Vertacal="0" Farward="0" HatHeight="0.062" HeadScale ="1.1" ShiftingX="0" ShiftingY="0.01" ShiftingZ="0.06"/>
+  </RoleInfos>
+</CommonTag>
