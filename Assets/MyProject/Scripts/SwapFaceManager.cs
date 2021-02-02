@@ -142,7 +142,7 @@ public class SwapFaceManager : MonoBehaviour
 		});
 		this.gongnvButton.onClick.AddListener(delegate ()
 		{
-			bool isRestCapture = false;//是否需要重新录制
+			bool isRestCapture = false;//是否需要重新录制  这个版本增加到GIT上，再也不怕丢嘞 
 			if (_movieTex != null && _movieTex.name == gongnvButton.name)
 			{
 				isRestCapture = false;
