@@ -4,16 +4,7 @@
 #if UNITY_5_6_0 || UNITY_5_6_1 
 	#define AVPRO_MOVIECAPTURE_UNITYBUG_RENDERTOCUBEMAP_56
 #endif
-#if UNITY_2018_1_OR_NEWER
-	// Unity 2018.1 introduces stereo cubemap render methods, but with no camera rotation
-	#define AVPRO_MOVIECAPTURE_UNITY_STEREOCUBEMAP_RENDER
-	#if UNITY_2018_2_OR_NEWER || UNITY_2018_1_9
-		// Unity 2018.2 adds camera rotation
-		#define AVPRO_MOVIECAPTURE_UNITY_STEREOCUBEMAP_RENDER_WITHROTATION
-	#endif
-#endif
 using UnityEngine;
-using System.Collections;
 
 //-----------------------------------------------------------------------------
 // Copyright 2012-2018 RenderHeads Ltd.  All rights reserved.
@@ -38,10 +29,10 @@ namespace RenderHeads.Media.AVProMovieCapture
 		public int _cubemapDepth = 24;
 
 		[SerializeField]
-		public bool _supportGUI = false;
+		public bool _supportGUI = true;
 
 		[SerializeField]
-		public bool _supportCameraRotation = false;
+		public bool _supportCameraRotation = true;
 
 		[SerializeField]
 		[Tooltip("Render 180 degree equirectangular instead of 360 degrees")]
@@ -65,16 +56,6 @@ namespace RenderHeads.Media.AVProMovieCapture
 		private RenderTexture _finalTarget;
 		private System.IntPtr _targetNativePointer = System.IntPtr.Zero;
 		private int _propFlipX;
-		#if SUPPORT_SHADER_ROTATION
-		private int _propRotation;
-		#endif
-
-		private enum CubemapRenderMethod
-		{
-			Manual,		// Manually render the cubemaps - supports world space GUI, camera rotation, but is slow and doesn't give correct stereo
-			Unity,		// No stereo, no world space GUI, no camera rotation
-			Unity2018,	// Good fast stereo, no world space GUI, camera rotation only in 2018.2 and above
-		}
 
 		public CaptureFromCamera360()
 		{
@@ -82,34 +63,9 @@ namespace RenderHeads.Media.AVProMovieCapture
 			_renderResolution = Resolution.POW2_2048x2048;
 		}
 
-		private CubemapRenderMethod GetCubemapRenderingMethod()
+		protected bool IsManualCubemapRendering()
 		{
-			if (_supportGUI)
-			{
-				return CubemapRenderMethod.Manual;
-			}
-			if (_supportCameraRotation)
-			{
-				if (_stereoRendering != StereoPacking.None)
-				{
-#if AVPRO_MOVIECAPTURE_UNITY_STEREOCUBEMAP_RENDER_WITHROTATION
-					return CubemapRenderMethod.Unity2018;
-#endif
-				}
-				return CubemapRenderMethod.Manual;
-			}
-			if (_stereoRendering == StereoPacking.None)
-			{
-				return CubemapRenderMethod.Unity;
-			}
-			else
-			{
-#if AVPRO_MOVIECAPTURE_UNITY_STEREOCUBEMAP_RENDER
-				return CubemapRenderMethod.Unity2018;
-#else
-				return CubemapRenderMethod.Manual;
-#endif
-			}		
+			return (_supportGUI || _supportCameraRotation || _stereoRendering != StereoPacking.None);
 		}
 
 		public void SetCamera(Camera camera)
@@ -169,29 +125,6 @@ namespace RenderHeads.Media.AVProMovieCapture
 
 		public override void UpdateFrame()
 		{
-			if (_useWaitForEndOfFrame)
-			{
-				if (_capturing && !_paused)
-				{
-					StartCoroutine(FinalRenderCapture());
-				}
-			}
-			else
-			{
-				Capture();
-			}
-			base.UpdateFrame();
-		}
-
-		private IEnumerator FinalRenderCapture()
-		{
-			yield return _waitForEndOfFrame;
-
-			Capture();
-		}
-
-		private void Capture()
-		{
 			TickFrameTimer();
 
 			AccumulateMotionBlur();
@@ -249,6 +182,8 @@ namespace RenderHeads.Media.AVProMovieCapture
 				}
 			}
 
+			base.UpdateFrame();
+
 			RenormTimer();
 		}
 
@@ -271,55 +206,6 @@ namespace RenderHeads.Media.AVProMovieCapture
 			Graphics.SetRenderTarget(null);
 		}
 
-		private void RenderCubemapToEquiRect(RenderTexture cubemap, RenderTexture target, bool supportRotation, Quaternion rotation, bool isEyeLeft)
-		{
-			#if SUPPORT_SHADER_ROTATION
-			if (supportRotation)
-			{
-				// Note: Because Unity's Camera.RenderCubemap() doesn't support rotated cameras, we apply the rotation matrix in the cubemap lookup
-				_cubemapToEquirectangularMaterial.EnableKeyword("USE_ROTATION");
-				Matrix4x4 rotationMatrix = Matrix4x4.TRS(Vector3.zero, rotation, Vector3.one);
-				_cubemapToEquirectangularMaterial.SetMatrix(_propRotation, rotationMatrix);
-			}
-			else
-			{
-				_cubemapToEquirectangularMaterial.DisableKeyword("USE_ROTATION");
-			}
-			#endif
-
-			if (_stereoRendering == StereoPacking.TopBottom)
-			{
-				if (isEyeLeft)
-				{
-					// Render to top
-					_cubemapToEquirectangularMaterial.DisableKeyword("STEREOPACK_BOTTOM");
-					_cubemapToEquirectangularMaterial.EnableKeyword("STEREOPACK_TOP");
-				}
-				else
-				{
-					// Render to bottom
-					_cubemapToEquirectangularMaterial.DisableKeyword("STEREOPACK_TOP");
-					_cubemapToEquirectangularMaterial.EnableKeyword("STEREOPACK_BOTTOM");
-				}
-			}
-			else if (_stereoRendering == StereoPacking.LeftRight)
-			{
-				if (isEyeLeft)
-				{
-					// Render to left
-					_cubemapToEquirectangularMaterial.DisableKeyword("STEREOPACK_RIGHT");
-					_cubemapToEquirectangularMaterial.EnableKeyword("STEREOPACK_LEFT");
-				}
-				else
-				{
-					// Render to right
-					_cubemapToEquirectangularMaterial.DisableKeyword("STEREOPACK_LEFT");
-					_cubemapToEquirectangularMaterial.EnableKeyword("STEREOPACK_RIGHT");
-				}
-			}
-			Graphics.Blit(cubemap, target, _cubemapToEquirectangularMaterial);
-		}
-
 		private void UpdateTexture()
 		{
 			// In Direct3D the RT can be flipped vertically
@@ -334,67 +220,77 @@ namespace RenderHeads.Media.AVProMovieCapture
 			Camera camera = _camera;
 
 			_cubeTarget.DiscardContents();
-			_finalTarget.DiscardContents();
 
-			CubemapRenderMethod cubemapRenderMethod = GetCubemapRenderingMethod();
-			
 			if (_stereoRendering == StereoPacking.None)
 			{
-				if (cubemapRenderMethod == CubemapRenderMethod.Unity)
+				if (!IsManualCubemapRendering())
 				{
-					#if AVPRO_MOVIECAPTURE_UNITYBUG_RENDERTOCUBEMAP_56
+#if AVPRO_MOVIECAPTURE_UNITYBUG_RENDERTOCUBEMAP_56
 					RenderTexture prev = camera.targetTexture;
-					#endif
+#endif
 					// Note: Camera.RenderToCubemap() doesn't support camera rotation
 					camera.RenderToCubemap(_cubeTarget, 63);
 
-					#if AVPRO_MOVIECAPTURE_UNITYBUG_RENDERTOCUBEMAP_56
+#if AVPRO_MOVIECAPTURE_UNITYBUG_RENDERTOCUBEMAP_56
 					// NOTE: We need this to clean up the state in at least Unity 5.6.0 - 5.6.1p1
 					camera.targetTexture = prev;
-					#endif
+#endif
 				}
-				else if (cubemapRenderMethod == CubemapRenderMethod.Manual)
+				else
 				{
 					RenderCameraToCubemap(camera, _cubeTarget);
 				}
-				RenderCubemapToEquiRect(_cubeTarget, _finalTarget, false, Quaternion.identity, true);
+
+				_finalTarget.DiscardContents();
+				Graphics.Blit(_cubeTarget, _finalTarget, _cubemapToEquirectangularMaterial);
 			}
 			else
 			{
-				#if AVPRO_MOVIECAPTURE_UNITY_STEREOCUBEMAP_RENDER
-				if (cubemapRenderMethod == CubemapRenderMethod.Unity2018)
+				// Save camera state
+				Vector3 cameraPosition = camera.transform.localPosition;
+
+				//Left eye
+				camera.transform.Translate(new Vector3(-_ipd / 2f, 0f, 0f), Space.Self);
+
+				RenderCameraToCubemap(camera, _cubeTarget);
+
+				if (_stereoRendering == StereoPacking.TopBottom)
 				{
-					//Left eye
-					camera.stereoSeparation = _ipd;
-					camera.RenderToCubemap(_cubeTarget, 63, Camera.MonoOrStereoscopicEye.Left);
-					RenderCubemapToEquiRect(_cubeTarget, _finalTarget, false, camera.transform.rotation, true);
-
-					// Right eye
-					_cubeTarget.DiscardContents();
-					camera.RenderToCubemap(_cubeTarget, 63, Camera.MonoOrStereoscopicEye.Right);
-					RenderCubemapToEquiRect(_cubeTarget, _finalTarget, false, camera.transform.rotation, false);
-
-				} else
-				#endif
-				if (cubemapRenderMethod == CubemapRenderMethod.Manual)
-				{
-					// Save camera state
-					Vector3 cameraPosition = camera.transform.localPosition;
-
-					// Left eye
-					camera.transform.Translate(new Vector3(-_ipd / 2f, 0f, 0f), Space.Self);
-					RenderCameraToCubemap(camera, _cubeTarget);
-					RenderCubemapToEquiRect(_cubeTarget, _finalTarget, false, Quaternion.identity, true);
-
-					// Right eye
-					camera.transform.localPosition = cameraPosition;
-					camera.transform.Translate(new Vector3(_ipd / 2f, 0f, 0f), Space.Self);
-					RenderCameraToCubemap(camera, _cubeTarget);
-					RenderCubemapToEquiRect(_cubeTarget, _finalTarget, false, Quaternion.identity, false);
-
-					// Restore camera state
-					camera.transform.localPosition = cameraPosition;
+					_cubemapToEquirectangularMaterial.DisableKeyword("STEREOPACK_BOTTOM");
+					_cubemapToEquirectangularMaterial.EnableKeyword("STEREOPACK_TOP");
 				}
+				else if (_stereoRendering == StereoPacking.LeftRight)
+				{
+					_cubemapToEquirectangularMaterial.DisableKeyword("STEREOPACK_RIGHT");
+					_cubemapToEquirectangularMaterial.EnableKeyword("STEREOPACK_LEFT");
+				}
+
+				_finalTarget.DiscardContents();
+				Graphics.Blit(_cubeTarget, _finalTarget, _cubemapToEquirectangularMaterial);
+
+				// Right eye
+				camera.transform.localPosition = cameraPosition;
+				camera.transform.Translate(new Vector3(_ipd / 2f, 0f, 0f), Space.Self);
+
+				_cubeTarget.DiscardContents();
+				RenderCameraToCubemap(camera, _cubeTarget);
+
+				if (_stereoRendering == StereoPacking.TopBottom)
+				{
+					_cubemapToEquirectangularMaterial.DisableKeyword("STEREOPACK_TOP");
+					_cubemapToEquirectangularMaterial.EnableKeyword("STEREOPACK_BOTTOM");
+				}
+				else if (_stereoRendering == StereoPacking.LeftRight)
+				{
+					_cubemapToEquirectangularMaterial.DisableKeyword("STEREOPACK_LEFT");
+					_cubemapToEquirectangularMaterial.EnableKeyword("STEREOPACK_RIGHT");
+				}
+
+				_finalTarget.DiscardContents();
+				Graphics.Blit(_cubeTarget, _finalTarget, _cubemapToEquirectangularMaterial);
+
+				// Restore camera state
+				camera.transform.localPosition = cameraPosition;
 			}
 		}
 
@@ -417,42 +313,36 @@ namespace RenderHeads.Media.AVProMovieCapture
 			camera.targetTexture = _faceTarget;
 			camera.fieldOfView = 90f;
 
-			// Front
 			camera.transform.rotation = xform * Quaternion.LookRotation(Vector3.forward, Vector3.down);
 			_faceTarget.DiscardContents();
 			camera.Render();
 			Graphics.SetRenderTarget(cubemapTarget, 0, CubemapFace.PositiveZ);
 			Graphics.Blit(_faceTarget, _blitMaterial);
 
-			// Back
 			camera.transform.rotation = xform * Quaternion.LookRotation(Vector3.back, Vector3.down);
 			_faceTarget.DiscardContents();
 			camera.Render();
 			Graphics.SetRenderTarget(cubemapTarget, 0, CubemapFace.NegativeZ);
 			Graphics.Blit(_faceTarget, _blitMaterial);
 
-			// Right
 			camera.transform.rotation = xform * Quaternion.LookRotation(Vector3.right, Vector3.down);
 			_faceTarget.DiscardContents();
 			camera.Render();
 			Graphics.SetRenderTarget(cubemapTarget, 0, CubemapFace.NegativeX);
 			Graphics.Blit(_faceTarget, _blitMaterial);
 
-			// Left
 			camera.transform.rotation = xform * Quaternion.LookRotation(Vector3.left, Vector3.down);
 			_faceTarget.DiscardContents();
 			camera.Render();
 			Graphics.SetRenderTarget(cubemapTarget, 0, CubemapFace.PositiveX);
 			Graphics.Blit(_faceTarget, _blitMaterial);
 
-			// Up
 			camera.transform.rotation = xform * Quaternion.LookRotation(Vector3.up, Vector3.forward);
 			_faceTarget.DiscardContents();
 			camera.Render();
 			Graphics.SetRenderTarget(cubemapTarget, 0, CubemapFace.PositiveY);
 			Graphics.Blit(_faceTarget, _blitMaterial);
 
-			// Down
 			camera.transform.rotation = xform * Quaternion.LookRotation(Vector3.down, Vector3.back);
 			_faceTarget.DiscardContents();
 			camera.Render();
@@ -526,9 +416,6 @@ namespace RenderHeads.Media.AVProMovieCapture
 			{
 				int aaLevel = GetCameraAntiAliasingLevel(_camera);
 
-				CubemapRenderMethod cubemapRenderMethod = GetCubemapRenderingMethod();
-				Debug.Log("[AVProMovieCapture] Using cubemap render method: " + cubemapRenderMethod.ToString());
-
 				if (!Mathf.IsPowerOfTwo(_cubemapResolution))
 				{
 					_cubemapResolution = Mathf.ClosestPowerOfTwo(_cubemapResolution);
@@ -562,7 +449,7 @@ namespace RenderHeads.Media.AVProMovieCapture
 						_faceTarget = null;
 					}
 				}
-				if (cubemapRenderMethod == CubemapRenderMethod.Manual)
+				if (IsManualCubemapRendering())
 				{
 					if (_faceTarget == null)
 					{
@@ -583,7 +470,6 @@ namespace RenderHeads.Media.AVProMovieCapture
 					_cubemapToEquirectangularMaterial.SetFloat(_propFlipX, 1.0f);
 				}
 
-				_cubemapToEquirectangularMaterial.DisableKeyword("USE_ROTATION");
 				_cubemapToEquirectangularMaterial.DisableKeyword("STEREOPACK_TOP");
 				_cubemapToEquirectangularMaterial.DisableKeyword("STEREOPACK_BOTTOM");
 				_cubemapToEquirectangularMaterial.DisableKeyword("STEREOPACK_LEFT");
@@ -602,12 +488,12 @@ namespace RenderHeads.Media.AVProMovieCapture
 
 				// Create the cube render target
 				int cubeDepth = 0;
-				if (cubemapRenderMethod != CubemapRenderMethod.Manual)
+				if (!IsManualCubemapRendering())
 				{
 					cubeDepth = _cubemapDepth;
 				}
 				int cubeAA = 1;
-				if (cubemapRenderMethod != CubemapRenderMethod.Manual)
+				if (!IsManualCubemapRendering())
 				{
 					cubeAA = aaLevel;
 				}
@@ -684,9 +570,6 @@ namespace RenderHeads.Media.AVProMovieCapture
 				Debug.LogError("[AVProMovieCapture] Can't find Hidden/BlitCopy shader");
 			}
 			_propFlipX = Shader.PropertyToID("_FlipX");
-			#if SUPPORT_SHADER_ROTATION
-			_propRotation = Shader.PropertyToID("_RotationMatrix");
-			#endif
 
 			base.Start();
 		}

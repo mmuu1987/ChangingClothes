@@ -1,7 +1,3 @@
-#if UNITY_5_6_OR_NEWER
-	#define AVPRO_UNITY_CLASS_DISPLAY
-#endif
-
 using UnityEngine;
 using System.Collections;
 
@@ -19,6 +15,7 @@ namespace RenderHeads.Media.AVProMovieCapture
 	public class CaptureFromScreen : CaptureBase
 	{
 		//private const int NewFrameSleepTimeMs = 6;
+		private YieldInstruction _waitForEndOfFrame;
 
 		public override bool PrepareCapture()
 		{
@@ -32,25 +29,6 @@ namespace RenderHeads.Media.AVProMovieCapture
 				Debug.LogError("[AVProMovieCapture] OpenGL not yet supported for CaptureFromScreen component, please use Direct3D11 instead. You may need to switch your build platform to Windows.");
 				return false;
 			}
-
-#if AVPRO_UNITY_CLASS_DISPLAY && UNITY_EDITOR
-			if (Display.displays.Length > 1)
-			{
-				bool isSecondDisplayActive = false;
-				for (int i = 1; i < Display.displays.Length; i++)
-				{
-					if (Display.displays[i].active)
-					{
-						isSecondDisplayActive = true;
-						break;
-					}
-				}
-				if (isSecondDisplayActive)
-				{
-					Debug.LogError("[AVProMovieCapture] CaptureFromScreen doesn't work correctly (can cause stretching or incorrect display capture) when there are multiple displays are active.  Use CaptureFromCamera instead.");
-				}				
-			}
-#endif
 
 			SelectRecordingResolution(Screen.width, Screen.height);
 
@@ -73,7 +51,16 @@ namespace RenderHeads.Media.AVProMovieCapture
 
 			GenerateFilename();
 
+			_waitForEndOfFrame = new WaitForEndOfFrame();
+
 			return base.PrepareCapture();
+		}
+
+		public override void UnprepareCapture()
+		{
+			_waitForEndOfFrame = null;
+
+			base.UnprepareCapture();
 		}
 
 		private IEnumerator FinalRenderCapture()

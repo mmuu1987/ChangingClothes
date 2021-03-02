@@ -50,6 +50,7 @@ public class NetManager : MonoBehaviour
 		int port = 6000;
 		string host = GlobalSettings.ServerIp;
 		bool flag = messageBytes == null || messageBytes.Length == 0;
+		UnityEngine.Debug.LogError("server ip is " + GlobalSettings.ServerIp);
 		if (flag)
 		{
 			throw new UnityException("没能完整的读取到图片");
@@ -397,6 +398,9 @@ public class NetManager : MonoBehaviour
 		}
 		this._clientSocket = null;
 		bool flag2 = this._thread != null;
+		UDPrecv.Close();
+		UDPrecv.Dispose();
+		
 		if (flag2)
 		{
 			this._thread.Abort();

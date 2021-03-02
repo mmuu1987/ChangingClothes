@@ -122,9 +122,6 @@ namespace RenderHeads.Media.AVProMovieCapture
 				eye.transform.parent = _cameraGroup;
 				eye.transform.rotation = Quaternion.AngleAxis(-yRot, Vector3.right);
 				eye.transform.localPosition = new Vector3(xOffset, 0f, 0f);
-				// NOTE: We copy the hideFlags otherwise when instantiated by the Movie Capture window which has the DontSave flag
-				// Unity throws an error about destroying transforms when coming out of play mode.
-				eye.hideFlags = this.gameObject.hideFlags;
 				camera = eye.AddComponent<Camera>();
 				isCreated = true;
 			}
@@ -208,29 +205,6 @@ namespace RenderHeads.Media.AVProMovieCapture
 
 		public override void UpdateFrame()
 		{
-			if (_useWaitForEndOfFrame)
-			{
-				if (_capturing && !_paused)
-				{
-					StartCoroutine(FinalRenderCapture());
-				}
-			}
-			else
-			{
-				Capture();
-			}
-			base.UpdateFrame();
-		}
-
-		private IEnumerator FinalRenderCapture()
-		{
-			yield return _waitForEndOfFrame;
-
-			Capture();
-		}
-
-		private void Capture()
-		{
 			TickFrameTimer();
 
 			AccumulateMotionBlur();
@@ -277,6 +251,8 @@ namespace RenderHeads.Media.AVProMovieCapture
 					}
 				}
 			}
+
+			base.UpdateFrame();
 
 			RenormTimer();
 		}
@@ -421,9 +397,6 @@ namespace RenderHeads.Media.AVProMovieCapture
 			{
 				GameObject go = new GameObject("OdsCameraGroup");
 				go.transform.parent = this.gameObject.transform;
-				// NOTE: We copy the hideFlags otherwise when instantiated by the Movie Capture window which has the DontSave flag
-				// Unity throws an error about destroying transforms when coming out of play mode.
-				go.hideFlags = this.gameObject.hideFlags;
 				_cameraGroup = go.transform;
 			}
 
@@ -476,54 +449,47 @@ namespace RenderHeads.Media.AVProMovieCapture
 			return base.PrepareCapture();
 		}
 
-		private static void DestroyEye(Camera camera)
-		{			
-			if (camera != null)
-			{
-				RenderTexture.ReleaseTemporary(camera.targetTexture);
-				if (Application.isPlaying)
-				{
-					GameObject.Destroy(camera.gameObject);
-				}
-				#if UNITY_EDITOR
-				else
-				{
-					GameObject.DestroyImmediate(camera.gameObject);
-				}
-				#endif	
-			}
-		}
-
 		public override void OnDestroy()
 		{
 			_targetNativePointer = System.IntPtr.Zero;
+
 			if (_final != null)
 			{
 				RenderTexture.ReleaseTemporary(_final);
 				_final = null;
 			}
 
-			DestroyEye(_leftCameraTop);
-			DestroyEye(_leftCameraBot);
-			DestroyEye(_rightCameraTop);
-			DestroyEye(_rightCameraBot);
-			_leftCameraTop = null;
-			_leftCameraBot = null;
-			_rightCameraTop = null;
-			_rightCameraBot = null;
+			if (_leftCameraTop != null)
+			{
+				RenderTexture.ReleaseTemporary(_leftCameraTop.targetTexture);
+				GameObject.Destroy(_leftCameraTop.gameObject);
+				_leftCameraTop = null;
+			}
+
+			if (_leftCameraBot != null)
+			{
+				RenderTexture.ReleaseTemporary(_leftCameraBot.targetTexture);
+				GameObject.Destroy(_leftCameraBot.gameObject);
+				_leftCameraBot = null;
+			}
+
+			if (_rightCameraTop != null)
+			{
+				RenderTexture.ReleaseTemporary(_rightCameraTop.targetTexture);
+				GameObject.Destroy(_rightCameraTop.gameObject);
+				_rightCameraTop = null;
+			}
+
+			if (_rightCameraBot != null)
+			{
+				RenderTexture.ReleaseTemporary(_rightCameraBot.targetTexture);
+				GameObject.Destroy(_rightCameraBot.gameObject);
+				_rightCameraBot = null;
+			}
 
 			if (_cameraGroup != null)
 			{
-				if (Application.isPlaying)
-				{
-					GameObject.Destroy(_cameraGroup.gameObject);
-				}
-				#if UNITY_EDITOR
-				else
-				{
-					GameObject.DestroyImmediate(_cameraGroup.gameObject);
-				}
-				#endif	
+				GameObject.Destroy(_cameraGroup.gameObject);
 				_cameraGroup = null;
 			}
 

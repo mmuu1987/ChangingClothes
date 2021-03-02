@@ -136,8 +136,8 @@ MonoBehaviour:
   _minimumDiskSpaceMB: -1
   _cubemapResolution: 2048
   _cubemapDepth: 24
-  _supportGUI: 0
-  _supportCameraRotation: 0
+  _supportGUI: 1
+  _supportCameraRotation: 1
   _stereoRendering: 0
   _ipd: .064000003
   _camera: {fileID: 0}

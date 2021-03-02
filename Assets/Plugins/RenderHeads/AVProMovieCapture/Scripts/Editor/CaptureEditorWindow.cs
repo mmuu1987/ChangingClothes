@@ -48,7 +48,7 @@ namespace RenderHeads.Media.AVProMovieCapture.Editor
 		private readonly string[] _downScales = { "Original", "Half", "Quarter", "Eighth", "Sixteenth", "Custom" };
 		private readonly string[] _captureModes = { "Realtime Capture", "Offline Render" };
 		private readonly string[] _outputFolders = { "Project Folder", "Persistent Data Folder", "Absolute Folder" };     
-		private readonly string[] _sourceNames = { "Screen", "Camera", "Camera 360 (Mono+Stereo)", "Camera 360 (experimental ODS Stereo)" };
+		private readonly string[] _sourceNames = { "Screen", "Camera", "Camera 360 (fast Stereo)", "Camera 360 (accurate ODS Stereo)" };
 
 		private enum SourceType
 		{
@@ -56,14 +56,6 @@ namespace RenderHeads.Media.AVProMovieCapture.Editor
 			Camera,
 			Camera360,
 			Camera360ODS,
-		}
-
-		private enum ConfigTools
-		{
-			Output = 0,
-			Capture = 1,
-			Visual = 2,
-			Audio = 3,
 		}
 
 		[SerializeField]
@@ -135,10 +127,6 @@ namespace RenderHeads.Media.AVProMovieCapture.Editor
 		private int _cubemapDepth = 24;
 		[SerializeField]
 		private bool _render180Degrees = false;
-		[SerializeField]
-		private bool _captureWorldSpaceGUI = false;
-		[SerializeField]
-		private bool _supportCameraRotation = false;
 		private int _cubemapStereoPacking = 0;
 		private float _cubemapStereoIPD = 0.064f;
 
@@ -160,8 +148,6 @@ namespace RenderHeads.Media.AVProMovieCapture.Editor
 		private SerializedProperty _propRenderResolution;
 		private SerializedProperty _propUseContributingCameras;
 		private SerializedProperty _propRender180Degrees;
-		private SerializedProperty _propCaptureWorldSpaceGUI;
-		private SerializedProperty _propSupportCameraRotation;
 
 		private SerializedProperty _propRenderAntiAliasing;
 		private SerializedProperty _propOdsRender180Degrees;
@@ -269,9 +255,6 @@ namespace RenderHeads.Media.AVProMovieCapture.Editor
 				_propRenderResolution = _so.FindProperty("_renderResolution");
 				_propUseContributingCameras = _so.FindProperty("_useContributingCameras");
 				_propRender180Degrees = _so.FindProperty("_render180Degrees");
-				_propCaptureWorldSpaceGUI = _so.FindProperty("_captureWorldSpaceGUI");
-				_propSupportCameraRotation = _so.FindProperty("_supportCameraRotation");
-
 				_propFrameRate = _so.FindProperty("_frameRate");
 				_propTimelapseScale = _so.FindProperty("_timelapseScale");
 				_propStopMode = _so.FindProperty("_stopMode");
@@ -346,8 +329,6 @@ namespace RenderHeads.Media.AVProMovieCapture.Editor
 			_motionBlurSampleCount = EditorPrefs.GetInt(SettingsPrefix + "MotionBlurSampleCount", 16);
 
 			_render180Degrees = EditorPrefs.GetBool(SettingsPrefix + "Render180Degrees", false);
-			_captureWorldSpaceGUI = EditorPrefs.GetBool(SettingsPrefix + "CaptureWorldSpaceGUI", false);
-			_supportCameraRotation = EditorPrefs.GetBool(SettingsPrefix + "SupportCameraRotation", false);
 			_cubemapResolution = EditorPrefs.GetInt(SettingsPrefix + "CubemapResolution", 2048);
 			_cubemapDepth = EditorPrefs.GetInt(SettingsPrefix + "CubemapDepth", 24);
 			_cubemapStereoPacking = EditorPrefs.GetInt(SettingsPrefix + "CubemapStereoPacking", 0);
@@ -438,8 +419,6 @@ namespace RenderHeads.Media.AVProMovieCapture.Editor
 			EditorPrefs.SetInt(SettingsPrefix + "MotionBlurSampleCount", _motionBlurSampleCount);
 
 			EditorPrefs.SetBool(SettingsPrefix + "Render180Degrees", _render180Degrees);
-			EditorPrefs.SetBool(SettingsPrefix + "CaptureWorldSpaceGUI", _captureWorldSpaceGUI);
-			EditorPrefs.SetBool(SettingsPrefix + "SupportCameraRotation", _supportCameraRotation);
 			EditorPrefs.SetInt(SettingsPrefix + "CubemapResolution", _cubemapResolution);
 			EditorPrefs.SetInt(SettingsPrefix + "CubemapDepth", _cubemapDepth);
 			EditorPrefs.SetInt(SettingsPrefix + "CubemapStereoPacking", _cubemapStereoPacking);
@@ -493,8 +472,6 @@ namespace RenderHeads.Media.AVProMovieCapture.Editor
 			_useMotionBlur = false;
 			_motionBlurSampleCount = 16;
 			_render180Degrees = false;
-			_captureWorldSpaceGUI = false;
-			_supportCameraRotation = false;
 			_cubemapResolution = 2048;
 			_cubemapDepth = 24;
 			_cubemapStereoPacking = 0;
@@ -647,7 +624,7 @@ namespace RenderHeads.Media.AVProMovieCapture.Editor
 					_gameObject.hideFlags = HideFlags.HideAndDontSave;
 #if UNITY_5 || UNITY_5_4_OR_NEWER
 					_gameObject.hideFlags |= HideFlags.DontSaveInBuild|HideFlags.DontSaveInEditor|HideFlags.DontUnloadUnusedAsset;
-#endif
+#endif					
 					Object.DontDestroyOnLoad(_gameObject);
 				}
 			}
@@ -705,8 +682,6 @@ namespace RenderHeads.Media.AVProMovieCapture.Editor
 					_capture._renderAntiAliasing = _renderAntiAliasing;
 					_captureCamera360.SetCamera(_cameraNode);
 					_captureCamera360._render180Degrees = _render180Degrees;
-					_captureCamera360._supportCameraRotation = _supportCameraRotation;
-					_captureCamera360._supportGUI = _captureWorldSpaceGUI;
 					_captureCamera360._cubemapResolution = _cubemapResolution;
 					_captureCamera360._cubemapDepth = _cubemapDepth;
 					_captureCamera360._stereoRendering = (StereoPacking)_cubemapStereoPacking;
@@ -833,6 +808,7 @@ namespace RenderHeads.Media.AVProMovieCapture.Editor
 				}
 			}
 		}
+
 
 		private void OnDisable()
 		{
@@ -1121,15 +1097,8 @@ namespace RenderHeads.Media.AVProMovieCapture.Editor
 					bool isReady = true;
 					if (_sourceType == SourceType.Camera && _cameraNode == null)
 					{
-						if ((ConfigTools)_selectedConfigTool != ConfigTools.Capture)
-						{
-							_cameraNode = Utils.GetUltimateRenderCamera();
-						}
-						if (_cameraNode == null)
-						{
-							Debug.LogError("[AVProMovieCapture] Please select a Camera to capture from, or select to capture from Screen.");
-							isReady = false;
-						}
+						Debug.LogError("[AVProMovieCapture] Please select a Camera to capture from, or select to capture from Screen.");
+						isReady = false;
 					}
 
 					if (isReady)
@@ -1353,25 +1322,25 @@ namespace RenderHeads.Media.AVProMovieCapture.Editor
 
 		private void DrawConfigGUI_Toolbar()
 		{
-			string[] _toolNames = { "Output", "Capture", "Visual", "Audio" };
+			string[] _toolNames = { "General", "Visual", "Audio", "Output" };
 			_selectedConfigTool = GUILayout.Toolbar(_selectedConfigTool, _toolNames);
 		}
 
 		private void DrawConfigGUI()
 		{
-			switch ((ConfigTools)_selectedConfigTool)
+			switch (_selectedConfigTool)
 			{
-				case ConfigTools.Output:
-					DrawConfigGUI_Output();
+				case 0:
+					DrawConfigGUI_General();
 					break;
-				case ConfigTools.Capture:
-					DrawConfigGUI_Capture();
-					break;
-				case ConfigTools.Visual:
+				case 1:
 					DrawConfigGUI_Visual();
 					break;
-				case ConfigTools.Audio:
+				case 2:
 					DrawConfigGUI_Audio();
+					break;
+				case 3:
+					DrawConfigGUI_Output();
 					break;
 			}
 
@@ -1496,9 +1465,9 @@ namespace RenderHeads.Media.AVProMovieCapture.Editor
 			}
 		}
 
-		private void DrawConfigGUI_Capture()
+		private void DrawConfigGUI_General()
 		{
-			//GUILayout.Label("Capture", EditorStyles.boldLabel);
+			//GUILayout.Label("General", EditorStyles.boldLabel);
 			EditorGUILayout.BeginVertical("box");
 			//EditorGUI.indentLevel++;
 
@@ -1634,8 +1603,6 @@ namespace RenderHeads.Media.AVProMovieCapture.Editor
 				{
 					_cubemapStereoIPD = EditorGUILayout.FloatField("Interpupillary distance", _cubemapStereoIPD);
 				}
-				EditorGUILayout.PropertyField(_propCaptureWorldSpaceGUI, new GUIContent("Capture Worldspace UI"));
-				EditorGUILayout.PropertyField(_propSupportCameraRotation);
 				EditorGUI.indentLevel--;
 			}
 

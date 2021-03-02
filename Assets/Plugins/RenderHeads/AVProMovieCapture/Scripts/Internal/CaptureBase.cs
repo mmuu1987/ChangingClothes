@@ -168,10 +168,6 @@ namespace RenderHeads.Media.AVProMovieCapture
 		[SerializeField]
 		private bool _forceGpuFlush = false;
 
-		[Tooltip("This option can help issues where skinning is used, or other animation/rendering effects that only complete later in the frame.")]
-		[SerializeField]
-		protected bool _useWaitForEndOfFrame = true;		
-
 		// Audio options
 
 		public bool _noAudio = true;
@@ -258,7 +254,6 @@ namespace RenderHeads.Media.AVProMovieCapture
 		private bool _queuedStopCapture = false;
 		private float _captureStartTime = 0f;
 		private float _timeSinceLastFrame = 0f;
-		protected YieldInstruction _waitForEndOfFrame;
 
 		public string LastFilePath
 		{
@@ -312,12 +307,6 @@ namespace RenderHeads.Media.AVProMovieCapture
 		{
 			get { return _timelapseScale; }
 			set { _timelapseScale = value; }
-		}
-
-		public bool UseWaitForEndOfFrame
-		{
-			get { return _useWaitForEndOfFrame; }
-			set { _useWaitForEndOfFrame = value; }
 		}
 		
 		public PostCaptureSettings PostCapture
@@ -395,7 +384,6 @@ namespace RenderHeads.Media.AVProMovieCapture
 		public virtual void Start()
 		{
 			Application.runInBackground = true;
-			_waitForEndOfFrame = new WaitForEndOfFrame();
 
 			if (_captureOnStart)
 			{
@@ -648,7 +636,6 @@ namespace RenderHeads.Media.AVProMovieCapture
 
 		public virtual void OnDestroy()
 		{
-			_waitForEndOfFrame = null;
 			StopCapture();
 		}
 
@@ -1011,7 +998,7 @@ namespace RenderHeads.Media.AVProMovieCapture
 				}
 				else
 				{
-					info += " vcodec:'Media Foundation H.264'";
+					info += " vcodec:'Media Founndation H.264'";
 				}
 				if (!noAudio)
 				{
@@ -1075,13 +1062,6 @@ namespace RenderHeads.Media.AVProMovieCapture
 				if (!HasExtension(_filePath, ".mp4") && _useMediaFoundationH264)
 				{
 					Debug.LogError("[AVProMovieCapture] When using MF H.264 codec the MP4 extension must be used");
-				}
-				// MF H.264 encoder has a limit of Level 5.2 which is 9,437,184 luma pixels
-				// but we've seen it fail slightly below this limit, so we test against 9360000
-				// to offer a useful potential error message
-				else if (_useMediaFoundationH264 && ((_targetWidth * _targetHeight) >= 9360000))
-				{
-					Debug.LogError("[AVProMovieCapture] Resolution is possibly too high for the MF H.264 codec");
 				}
 
 				if (HasExtension(_filePath, ".mp4") && !_useMediaFoundationH264 || _codecIndex == 0)
@@ -1267,9 +1247,13 @@ namespace RenderHeads.Media.AVProMovieCapture
 				_capturing = false;
 			}
 
+			RenderThreadEvent(NativePlugin.PluginEvent.FreeResources);
+
 			bool applyPostOperations = false;
 			if (_handle >= 0)
 			{
+				NativePlugin.Stop(_handle, skipPendingFrames);
+				//System.Threading.Thread.Sleep(100);
 				NativePlugin.FreeRecorder(_handle);
 				_handle = -1;
 
@@ -1287,8 +1271,6 @@ namespace RenderHeads.Media.AVProMovieCapture
 					}
 				}
 			}
-
-			RenderThreadEvent(NativePlugin.PluginEvent.FreeResources);
 
 			_fileInfo = null;
 
@@ -1340,11 +1322,6 @@ namespace RenderHeads.Media.AVProMovieCapture
 				try
 				{
 					if (MP4FileProcessing.ApplyFastStart(path, false))
-					/*MP4FileProcessing.Options options = new MP4FileProcessing.Options();
-					options.applyFastStart = true;
-					options.applyStereoMode = false;
-					options.stereoMode = MP4FileProcessing.StereoMode.StereoLeftRight;					
-					if (MP4FileProcessing.Process(path, false, options))*/
 					{
 						Debug.Log("[AVProMovieCapture] moved atom 'moov' to start of file for fast streaming");
 					}

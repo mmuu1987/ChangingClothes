@@ -32,6 +32,7 @@ namespace RenderHeads.Media.AVProMovieCapture
 		PNG,
 	}
 
+
 	public enum FileWriterType
 	{
 		AVI = 0,
@@ -58,8 +59,8 @@ namespace RenderHeads.Media.AVProMovieCapture
 			FreeResources = 1,
 		}
 
-		public const string ScriptVersion = "3.7.0";
-		public const string ExpectedPluginVersion = "3.6.10";
+		public const string ScriptVersion = "3.5.2";
+		public const string ExpectedPluginVersion = "3.5.0";
 
 		public const int MaxRenderWidth = 16384;
 		public const int MaxRenderHeight = 16384;
@@ -223,12 +224,12 @@ namespace RenderHeads.Media.AVProMovieCapture
 		private static extern System.IntPtr GetPluginVersion();
 
 		[DllImport("AVProMovieCapture")]
-		private static extern bool GetAVIVideoCodecName(int index, [MarshalAs(UnmanagedType.LPWStr)] StringBuilder name, int nameBufferLength);
+		private static extern bool GetAVIVideoCodecName(int index, StringBuilder name, int nameBufferLength);
 
 		[DllImport("AVProMovieCapture")]
-		private static extern bool GetAVIAudioCodecName(int index, [MarshalAs(UnmanagedType.LPWStr)] StringBuilder name, int nameBufferLength);
+		private static extern bool GetAVIAudioCodecName(int index, StringBuilder name, int nameBufferLength);
 
 		[DllImport("AVProMovieCapture")]
-		private static extern bool GetAVIAudioInputDeviceName(int index, [MarshalAs(UnmanagedType.LPWStr)] StringBuilder name, int nameBufferLength);
+		private static extern bool GetAVIAudioInputDeviceName(int index, StringBuilder name, int nameBufferLength);
 	}
 }

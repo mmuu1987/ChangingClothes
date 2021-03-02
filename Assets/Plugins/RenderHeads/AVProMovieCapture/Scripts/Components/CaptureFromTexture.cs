@@ -2,7 +2,6 @@
 	#define AVPRO_MOVIECAPTURE_RENDERTEXTUREBGRA32_54
 #endif
 using UnityEngine;
-using System.Collections;
 
 //-----------------------------------------------------------------------------
 // Copyright 2012-2018 RenderHeads Ltd.  All rights reserved.
@@ -70,33 +69,12 @@ namespace RenderHeads.Media.AVProMovieCapture
 
 		public override void UpdateFrame()
 		{
-			if (_useWaitForEndOfFrame)
-			{
-				StartCoroutine(FinalRenderCapture());
-				base.UpdateFrame();
-			}
-			else
-			{
-				Capture();
-				base.UpdateFrame();
-			}
-		}
-
-		private IEnumerator FinalRenderCapture()
-		{
-			yield return _waitForEndOfFrame;
-
-			Capture();
-		}
-
-		private void Capture()
-		{
 			TickFrameTimer();
 
 			AccumulateMotionBlur();
 
 			if (ShouldCaptureFrame())
-			{
+			{		
 				bool hasSourceTextureChanged = HasSourceTextureChanged();
 
 				// If motion blur is enabled, wait until all frames are accumulated
@@ -157,6 +135,7 @@ namespace RenderHeads.Media.AVProMovieCapture
 					}
 				}
 			}
+			base.UpdateFrame();
 
 			RenormTimer();
 		}

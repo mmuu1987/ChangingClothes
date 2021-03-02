@@ -2,7 +2,6 @@
 	#define AVPRO_MOVIECAPTURE_DEFERREDSHADING
 #endif
 using UnityEngine;
-using System.Collections;
 
 //-----------------------------------------------------------------------------
 // Copyright 2012-2018 RenderHeads Ltd.  All rights reserved.
@@ -66,34 +65,9 @@ namespace RenderHeads.Media.AVProMovieCapture
 			return (_useContributingCameras && _contribCameras != null && _contribCameras.Length > 0);
 		}
 
-		public override void UpdateFrame()
-		{
-			if (_useWaitForEndOfFrame)
-			{
-				if (_capturing && !_paused && HasCamera())
-				{
-					StartCoroutine(FinalRenderCapture());
-				}
-
-				base.UpdateFrame();
-			}
-			else
-			{
-				base.UpdateFrame();
-				Capture();
-			}
-		}
-
-		private IEnumerator FinalRenderCapture()
-		{
-			yield return _waitForEndOfFrame;
-
-			Capture();
-		}
-
 		// If we're forcing a resolution or AA change then we have to render the camera again to the new target
 		// If we try to just set the targetTexture of the camera and grab it in OnRenderImage we can't render it to the screen as before :(
-		private void Capture()
+		public override void UpdateFrame()
 		{
 			TickFrameTimer();
 

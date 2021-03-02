@@ -61,7 +61,6 @@ namespace RenderHeads.Media.AVProMovieCapture.Editor
 		private SerializedProperty _propFlipVertically;
 		private SerializedProperty _propSupportAlpha;
 		private SerializedProperty _propForceGpuFlush;
-		private SerializedProperty _propWaitForEndOfFrame;
 
 		private SerializedProperty _propUseMotionBlur;
 		private SerializedProperty _propMotionBlurSamples;
@@ -431,7 +430,6 @@ namespace RenderHeads.Media.AVProMovieCapture.Editor
 		{
 			EditorGUILayout.PropertyField(_propAllowVsyncDisable);
 			EditorGUILayout.PropertyField(_propForceGpuFlush);
-			EditorGUILayout.PropertyField(_propWaitForEndOfFrame);
 			EditorGUILayout.PropertyField(_propSupportTextureRecreate, new GUIContent("Support Texture Recreate", "Using this option will slow rendering (forces GPU sync), but is needed to handle cases where texture resources are recreated, due to alt-tab or window resizing."));
 			EditorGUILayout.PropertyField(_propMinimumDiskSpaceMB);
 			EditorGUILayout.PropertyField(_propListCodecsOnStart);
@@ -618,7 +616,6 @@ namespace RenderHeads.Media.AVProMovieCapture.Editor
 			_propFlipVertically = serializedObject.FindProperty("_flipVertically");
 			_propSupportAlpha = serializedObject.FindProperty("_supportAlpha");
 			_propForceGpuFlush = serializedObject.FindProperty("_forceGpuFlush");
-			_propWaitForEndOfFrame = serializedObject.FindProperty("_useWaitForEndOfFrame");
 
 			_propUseMotionBlur = serializedObject.FindProperty("_useMotionBlur");
 			_propMotionBlurSamples = serializedObject.FindProperty("_motionBlurSamples");

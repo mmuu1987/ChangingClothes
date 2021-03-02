@@ -366,6 +366,7 @@ public class SwapFaceManager : MonoBehaviour
 	private void RemoveUserEvent(long obj)
 	{
 		this.CloseTipUI();
+		StopCaptureVideo();
 	}
 
 	// Token: 0x06000670 RID: 1648 RVA: 0x00046829 File Offset: 0x00044A29
@@ -634,55 +635,79 @@ public class SwapFaceManager : MonoBehaviour
 	#region  录制视频相关
 	public IEnumerator StartCaptureVideo(float captureTime)
 	{
-		//录屏先清空文件夹内容
-		string[] fileNames = Directory.GetFiles(_path, "*.*");
-
-		foreach (string fileName in fileNames)
-		{
-			File.Delete(fileName);
-		}
-		Debug.Log("开始录制视频");
+		
+		
+       
+        yield return new WaitForEndOfFrame();
 		yield return new WaitForEndOfFrame();
+        //yield return new WaitForSeconds(1f);
+        //录屏先清空文件夹内容
+        string[] fileNames = Directory.GetFiles(_path, "*.*");
 
-		ShowProgress(true);
+        foreach (string fileName in fileNames)
+        {
+            File.Delete(fileName);
+        }
 
-		AvProMovieCaptureFromCamera._codecName = "Media Foundation H.264(MP4)";
-		AvProMovieCaptureFromCamera._useMediaFoundationH264 = true;
-		AvProMovieCaptureFromCamera._noAudio = true;
 
-		AvProMovieCaptureFromCamera._outputFolderPath = _path;//指定视频输出路径
-															  //开始相机录制视频
-		AvProMovieCaptureFromCamera.StartCapture();
+        ShowProgress(true);
+
+        AvProMovieCaptureFromCamera._codecName = "Media Foundation H.264(MP4)";
+        AvProMovieCaptureFromCamera._useMediaFoundationH264 = true;
+        AvProMovieCaptureFromCamera._noAudio = true;
+
+        AvProMovieCaptureFromCamera._outputFolderPath = _path;//指定视频输出路径
+
+		
+                                                              //开始相机录制视频   
+        bool isStart =   AvProMovieCaptureFromCamera.StartCapture();
+		
+		Debug.LogError("开始录制 " + isStart);
+
+		if (isStart) Debug.LogError("开始录制成功");
+		else Debug.LogError("开始录制失败");
 
 		yield return new WaitForSeconds(captureTime);
 
+		yield return new WaitForEndOfFrame();
+
+		Debug.LogError("录制视频结束");
+
 		AvProMovieCaptureFromCamera.StopCapture();
 
-		_coroutineCapture=StartCoroutine(CompressVideoTest("mp4"));
-	}
+        _coroutineCapture = StartCoroutine(CompressVideoTest("mp4"));
+    }
 
 	public void StopCaptureVideo()
     {
-		Debug.Log("停止录制视频");
+        Debug.Log("取消录制视频");
 
-		MovieButtonEffect(false);
-		if (_coroutineCapture != null) StopCoroutine(_coroutineCapture);
-		AvProMovieCaptureFromCamera.StopCapture();
-		_mp4Path = null;
+        MovieButtonEffect(false);
+        if (_coroutineCapture != null) StopCoroutine(_coroutineCapture);
 		
-
-		if(_p!=null)
+		AvProMovieCaptureFromCamera.CancelCapture();
+        if (_p != null)
         {
-			_p.Close();//关闭进程
-			_p.Dispose();//释放资源
-			_p = null;
-		}
+            _p.Close();//关闭进程  
+            _p.Dispose();//释放资源  
+            _p = null;
+        }
 
-		if (_t != null)
-		{
-			_t.Abort();//强制停止
-			_t = null;
-		}
+        if (_t != null)
+        {
+            _t.Abort();//强制停止
+
+            _t = null;
+        }
+
+        StartCoroutine(GlobalSettings.WaitEndFarme(() => {
+            
+        }));
+		_mp4Path = null;
+
+
+
+
 	}
 
 	/// <summary>
@@ -736,7 +761,7 @@ public class SwapFaceManager : MonoBehaviour
         	//_p.StartInfo.Arguments = "-i "+srcFileName + " --videoquality 8 --pp default --audiobitrate 128 -o " + _destFileName;   //执行参数
 			_p.StartInfo.Arguments = "-i " + srcFileName + " -y -b 1300000 -an " + _destFileName;    //执行参数
 
-			Debug.Log("执行参数是： " + _p.StartInfo.Arguments);
+			//Debug.Log("执行参数是： " + _p.StartInfo.Arguments);
 
 			//p.StartInfo.Arguments ="/c title C:\\Users\\Administrator\\Desktop\\MovieCapture-2017-03-28-64257s-1200x900.ogv && ffmpeg2theora \"H:\\WZS_work\\Smilewall\\Smilewall20170310\\smilewallClineDmeo1020\\smilewallClineDmeo1020\\Assets\\StreamingAssets\\Video\\MovieCapture-2017-03-28-64257s-1200x900.avi\"  --videobitrate 1000 --pp default --audiobitrate 128 --two-pass --soft-target --contact \"http://sourceforge.net/projects/theoraconverter\" -o \"C:\\Users\\Administrator\\Desktop\\MovieCapture-2017-03-28-64257s-1200x900.ogv\"";
 

@@ -98,6 +98,7 @@ public class ChangeingClothesManager : MonoBehaviour
 		{
 			this.StartStandby();
 		}
+
 		Screen.SetResolution(2160, 3840, true);
 		
 	}
@@ -157,7 +158,7 @@ public class ChangeingClothesManager : MonoBehaviour
 		else
 		{
 			this.HlepTipGameObject.SetActive(false);
-			Debug.Log("识别到人物");
+			//Debug.Log("识别到人物");
 			this.userBodyBlender.ChangeBackGround(-1);
 			this.StopComputeStandby();
 			this.CheckBodyHeight();
@@ -299,23 +300,23 @@ public class ChangeingClothesManager : MonoBehaviour
 				float d5 = Vector3.Distance(spineBaseVector3_0, kneeLeftVector3_13);
 				float d6 = Vector3.Distance(kneeLeftVector3_13, ankleLeftVector3_14);
 				float height = d + d2 + d3 + d4 + d5 + d6;
-				Debug.Log(string.Concat(new object[]
-				{
-					"身高是 is ",
-					height,
-					"  d1=",
-					d,
-					"  d2=",
-					d2,
-					"  d3=",
-					d3,
-					"  d4=",
-					d4,
-					"  d5=",
-					d5,
-					"  d6=",
-					d6
-				}));
+				//Debug.Log(string.Concat(new object[]
+				//{
+				//	"身高是 is ",
+				//	height,
+				//	"  d1=",
+				//	d,
+				//	"  d2=",
+				//	d2,
+				//	"  d3=",
+				//	d3,
+				//	"  d4=",
+				//	d4,
+				//	"  d5=",
+				//	d5,
+				//	"  d6=",
+				//	d6
+				//}));
 			}
 		}
 		this.CheckUserRange(0.5f, 0.45f, 3f);
@@ -642,13 +643,13 @@ public class ChangeingClothesManager : MonoBehaviour
 		}
 		Vector3 pos = KinectManager.Instance.GetJointPosColorOverlay(obj, 3, this.mainCamera, backgroundRect);
 		Vector3 screenPos = this.mainCamera.WorldToScreenPoint(pos);
-		Debug.Log(string.Concat(new object[]
-		{
-			"screenPos  ",
-			screenPos,
-			"   Screen.width is",
-			Screen.width
-		}));
+		//Debug.Log(string.Concat(new object[]
+		//{
+		//	"screenPos  ",
+		//	screenPos,
+		//	"   Screen.width is",
+		//	Screen.width
+		//}));
 		Rect rect = Rect.zero;
 		bool flag2 = this.ShotHeadImage == null;
 		if (!flag2)

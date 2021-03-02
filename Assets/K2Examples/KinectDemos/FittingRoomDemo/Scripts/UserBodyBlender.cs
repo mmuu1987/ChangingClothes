@@ -148,7 +148,7 @@ public class UserBodyBlender : MonoBehaviour
 			}
 			else
 			{
-				Debug.Log("选择的背景贴图是： "+selected);
+				//Debug.Log("选择的背景贴图是： "+selected);
 
 				this.backgroundImage.texture = this.BackGroundTexs[selected + 1];
 				bool flag3 = this.userBlendMat != null;

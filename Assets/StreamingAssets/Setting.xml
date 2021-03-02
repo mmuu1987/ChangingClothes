@@ -3,7 +3,7 @@
   <LOG_LEVENL>3</LOG_LEVENL>
   <IP>192.168.1.205</IP>
   <!--是否显示帧率信息,True为显示，False为不显示-->
-  <IsDebug>false</IsDebug>
+  <IsDebug>true</IsDebug>
   <!--亮度-->
   <Brightness>1.25</Brightness>
   <!--饱和度-->

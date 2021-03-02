@@ -288,7 +288,7 @@ public static class GlobalSettings
 	}
 
 	// Token: 0x06000639 RID: 1593 RVA: 0x00045BC6 File Offset: 0x00043DC6
-	public static IEnumerator WaitEndFrame(Action callBack)
+	public static IEnumerator WaitEndFarme(Action callBack)
 	{
 		yield return null;
 		bool flag = callBack != null;

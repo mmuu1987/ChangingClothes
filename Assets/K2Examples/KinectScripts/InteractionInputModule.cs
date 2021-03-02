@@ -244,7 +244,7 @@ public class InteractionInputModule : PointerInputModule, InteractionListenerInt
             if (newPressed == null)
                 newPressed = ExecuteEvents.GetEventHandler<IPointerClickHandler>(currentOverGo);
 
-            Debug.Log("Pressed: " + newPressed);
+           // Debug.Log("Pressed: " + newPressed);
 
             float time = Time.unscaledTime;
 
@@ -329,7 +329,7 @@ public class InteractionInputModule : PointerInputModule, InteractionListenerInt
         var leftButtonData = mouseData.GetButtonState(PointerEventData.InputButton.Left).eventData;
 		var pointerEvent = leftButtonData.buttonData;
 		var currentOverGo = pointerEvent.pointerCurrentRaycast.gameObject;
-		Debug.Log("HandGripDetected overGo is " + currentOverGo);
+		//Debug.Log("HandGripDetected overGo is " + currentOverGo);
 
 
 		m_framePressState = PointerEventData.FramePressState.Pressed;
@@ -351,7 +351,7 @@ public class InteractionInputModule : PointerInputModule, InteractionListenerInt
         var leftButtonData = mouseData.GetButtonState(PointerEventData.InputButton.Left).eventData;
         var pointerEvent = leftButtonData.buttonData;
         var currentOverGo = pointerEvent.pointerCurrentRaycast.gameObject;
-        Debug.Log("HandReleaseDetected overGo is " + currentOverGo);
+       // Debug.Log("HandReleaseDetected overGo is " + currentOverGo);
 
 
 		m_framePressState = PointerEventData.FramePressState.Released;
