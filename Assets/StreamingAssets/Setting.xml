@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <CommonTag>
   <LOG_LEVENL>3</LOG_LEVENL>
-  <IP>192.168.1.205</IP>
+  <IP>192.168.1.183</IP>
   <!--是否显示帧率信息,True为显示，False为不显示-->
   <IsDebug>true</IsDebug>
   <!--亮度-->

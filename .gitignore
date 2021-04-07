@@ -62,3 +62,5 @@ crashlytics-build.properties
 *.mp4
 Assets/StreamingAssets/Video/completed.mp4
 Assets/StreamingAssets/Video/completed.mp4.meta
+Assets/StreamingAssets/Video/completed.mp4
+Assets/StreamingAssets/Video/Original.mp4
