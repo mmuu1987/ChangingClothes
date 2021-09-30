@@ -165,6 +165,7 @@ public class ChangeingClothesManager : MonoBehaviour
 			this.GetHeadImage(obj);
 			this.swapFaceManager.ShowRoleUi(true, obj);
 			this._curId = obj;
+            MyInternaction.Instance.EnableHand(true,1f,true);
 		}
 	}
 
@@ -174,6 +175,9 @@ public class ChangeingClothesManager : MonoBehaviour
 		this.HlepTipGameObject.SetActive(true);
 		this.userBodyBlender.ChangeBackGround(-1);
 		this.StartComputeStandby();
+
+        MyInternaction.Instance.MouseLeftImage.rectTransform.anchoredPosition = Vector2.zero;
+        MyInternaction.Instance.MouseRightImage.rectTransform.anchoredPosition = Vector2.zero;
 		this.swapFaceManager.ShowRoleUi(false, obj);
 		bool flag = this._curId == obj;
 		if (flag)
@@ -627,7 +631,8 @@ public class ChangeingClothesManager : MonoBehaviour
 	
 	// Token: 0x0600060A RID: 1546 RVA: 0x000441C8 File Offset: 0x000423C8
 	public void StartSwapFace()
-	{
+    {
+        MyInternaction.Instance.EnableHand(false,0f,false);
 		NetManager.Instance.SendFaceDataMessage(this._screenShot);
 	}
 

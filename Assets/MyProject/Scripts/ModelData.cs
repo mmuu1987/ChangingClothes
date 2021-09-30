@@ -8,31 +8,31 @@ using UnityEngine;
 public class ModelData : MonoBehaviour
 {
 	// Token: 0x0600064D RID: 1613 RVA: 0x00045F02 File Offset: 0x00044102
-	public IEnumerator Start()
+	public void Start()
 	{
-		bool flag = this.cloths.Count > 0;
-		if (flag)
-		{
-			yield return new WaitForEndOfFrame();
-			yield return new WaitForEndOfFrame();
-			yield return new WaitForSeconds(0.2f);
-			//bool flag2 = this.cloths.Count > 0;
-			//if (flag2)
-			//{
-			//	foreach (Cloth cloth in this.cloths)
-			//	{
-			//		bool flag3 = cloth != null;
-			//		if (flag3)
-			//		{
-			//			cloth.enabled = true;
-			//		}
-			//		cloth = null;
-			//	}
-			//	List<Cloth>.Enumerator enumerator = default(List<Cloth>.Enumerator);
-			//}
-		}
-		yield return null;
-		yield break;
+		//bool flag = this.cloths.Count > 0;
+		//if (flag)
+		//{
+		//	yield return new WaitForEndOfFrame();
+		//	yield return new WaitForEndOfFrame();
+		//	yield return new WaitForSeconds(0.2f);
+		//	//bool flag2 = this.cloths.Count > 0;
+		//	//if (flag2)
+		//	//{
+		//	//	foreach (Cloth cloth in this.cloths)
+		//	//	{
+		//	//		bool flag3 = cloth != null;
+		//	//		if (flag3)
+		//	//		{
+		//	//			cloth.enabled = true;
+		//	//		}
+		//	//		cloth = null;
+		//	//	}
+		//	//	List<Cloth>.Enumerator enumerator = default(List<Cloth>.Enumerator);
+		//	//}
+		//}
+		//yield return null;
+		//yield break;
 	}
 
 	// Token: 0x0600064E RID: 1614 RVA: 0x00045F14 File Offset: 0x00044114

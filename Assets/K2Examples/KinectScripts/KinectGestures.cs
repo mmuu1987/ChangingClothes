@@ -1738,7 +1738,7 @@ public class KinectGestures : MonoBehaviour, GestureManagerInterface
 				Vector3 dir3 = (jointsPos[this.rightHandIndex] - jointsPos[this.rightShoulderIndex]).normalized;
 				float angle2 = Vector3.Dot(dir3, Vector3.right);
 				angle2 = (1f - angle2) * 90f;
-				bool flag7 = angle2 > 70f || angle2 < 25f;
+				bool flag7 = angle2 > 80f || angle2 < 15f;
 				if (flag7)
 				{
 					isRightExactness = false;
@@ -1763,7 +1763,7 @@ public class KinectGestures : MonoBehaviour, GestureManagerInterface
 				Vector3 dir6 = (jointsPos[this.leftHandIndex] - jointsPos[this.leftShoulderIndex]).normalized;
 				float angle4 = Vector3.Dot(dir6, Vector3.left);
 				angle4 = (1f - angle4) * 90f;
-				bool flag11 = angle4 > 70f || angle4 < 25f;
+				bool flag11 = angle4 > 80f || angle4 < 15f;
 				if (flag11)
 				{
 					isLeftExactness = false;

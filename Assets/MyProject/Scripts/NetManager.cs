@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.Networking;
+using Debug = UnityEngine.Debug;
 
 // Token: 0x0200009E RID: 158
 public class NetManager : MonoBehaviour
@@ -57,14 +58,18 @@ public class NetManager : MonoBehaviour
 		}
 		try
 		{
-			IPAddress ip = IPAddress.Parse(host);
-			IPEndPoint ipe = new IPEndPoint(ip, port);
-			this._clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-			this._clientSocket.Connect(ipe);
-			this._clientSocket.Send(messageBytes);
+			
 			int count = 0;
 			this._thread = new Thread(delegate ()
 			{
+
+                IPAddress ip = IPAddress.Parse(host);
+                IPEndPoint ipe = new IPEndPoint(ip, port);
+                this._clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                this._clientSocket.Connect(ipe);
+                this._clientSocket.Send(messageBytes);
+                Debug.Log("发送成功" + " Length is " + messageBytes.Length);
+
 				int i = 0;
 				MemoryStream ms = new MemoryStream();
 				for (; ; )
@@ -110,7 +115,9 @@ public class NetManager : MonoBehaviour
 					}
 				}
 			});
+			Thread.Sleep(100);
 			this._thread.Start();
+
 		}
 		catch (Exception e)
 		{
@@ -122,6 +129,7 @@ public class NetManager : MonoBehaviour
 	// Token: 0x06000658 RID: 1624 RVA: 0x000461B8 File Offset: 0x000443B8
 	private void CloseMessage(MemoryStream ms)
 	{
+		Debug.Log("关闭连接");
 		bool flag = ms != null;
 		if (flag)
 		{
@@ -134,6 +142,7 @@ public class NetManager : MonoBehaviour
 		bool flag2 = this._clientSocket != null;
 		if (flag2)
 		{
+            _clientSocket.Dispose();
 			this._clientSocket.Close();
 		}
 		this._thread = null;
@@ -341,7 +350,8 @@ public class NetManager : MonoBehaviour
 		form.AddField("Sited", GlobalSettings.Stie);
 		form.AddField("Extension", "mp4");
 		
-		form.AddBinaryData("PicUuidData", bytes, "test", "application/octet-stream");
+		form.AddBinaryData("PicUuidData", bytes);
+        //form.AddBinaryData("", bytes, "", "jpg");
 		UnityEngine.Debug.Log(string.Concat(new object[]
 		{
 			"bytes length is ",

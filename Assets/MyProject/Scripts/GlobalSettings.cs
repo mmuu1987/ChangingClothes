@@ -244,7 +244,10 @@ public static class GlobalSettings
 		}
 	}
 
-	// Token: 0x06000636 RID: 1590 RVA: 0x00045AE8 File Offset: 0x00043CE8
+	/// <summary>
+	/// 创建8位的UUID
+	/// </summary>
+	/// <returns></returns>
 	public static string CreatUuid()
 	{
 		string uuid = null;
@@ -439,6 +442,11 @@ public static class GlobalSettings
 
 	// Token: 0x04000686 RID: 1670
 	public static string Stie = "阿里巴巴大文娱试衣镜";
+
+	/// <summary>
+	/// 停留UI触发点击的时间
+	/// </summary>
+    public static float ClickTime = 2f;
 
 	// Token: 0x04000687 RID: 1671
 	public static bool IsOutLog = true;

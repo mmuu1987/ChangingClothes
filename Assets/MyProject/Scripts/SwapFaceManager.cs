@@ -31,16 +31,21 @@ public class SwapFaceManager : MonoBehaviour
 	public UserBodyBlender userBodyBlender;
 
 	// Token: 0x040006C0 RID: 1728
-	public Button wenguanButton;
+	public BaseListeningUI wenguanButton;
 
 	// Token: 0x040006C1 RID: 1729
-	public Button jiangjunButton;
+	public BaseListeningUI jiangjunButton;
 
 	// Token: 0x040006C2 RID: 1730
-	public Button gongnvButton;
+	public BaseListeningUI gongnvButton;
 
 	// Token: 0x040006C3 RID: 1731
-	public Button shinvButton;
+	public BaseListeningUI shinvButton;
+
+
+    public BaseListeningUI PhotoBtn;
+
+    public BaseListeningUI ClosePhotoBtn;
 
 	// Token: 0x040006C4 RID: 1732
 	public GameObject Photopanel;
@@ -85,125 +90,136 @@ public class SwapFaceManager : MonoBehaviour
 
 	// Token: 0x0600066B RID: 1643 RVA: 0x000466F4 File Offset: 0x000448F4
 	private void Awake()
-	{
-		this.wenguanButton.onClick.AddListener(delegate ()
-		{
-			bool isRestCapture = false;
-			if (_movieTex != null && _movieTex.name == wenguanButton.name)
-			{
-				isRestCapture = false;
+    {
 
-			}
-			else
-			{
-				isRestCapture = true;
-				StopCaptureVideo();
-			}
-			this._modelName = this.wenguanButton.name;
-			this.LoadingTip(true, this._modelName);
-			bool flag = this._curSwapFaceHead == null;
-			if (flag)
-			{
-				ChangeingClothesManager.Instance.StartSwapFace();
-			}
-			else
-			{
-				
-				this.LoadModel(isRestCapture);
-			}
-		});
-		this.jiangjunButton.onClick.AddListener(delegate ()
-		{
+        this.wenguanButton.OnRayClick += () =>
+        {
+          
+                bool isRestCapture = false;
+                if (_movieTex != null && _movieTex.name == wenguanButton.name)
+                {
+                    isRestCapture = false;
 
-			Debug.Log("将军");
-			bool isRestCapture = false;
-			if (_movieTex != null && _movieTex.name == jiangjunButton.name)
-			{
-				isRestCapture = false;
+                }
+                else
+                {
+                    isRestCapture = true;
+                    StopCaptureVideo();
+                }
+                this._modelName = this.wenguanButton.name;
+                this.LoadingTip(true, this._modelName);
+                bool flag = this._curSwapFaceHead == null;
+                if (flag)
+                {
+                    ChangeingClothesManager.Instance.StartSwapFace();
+                }
+                else
+                {
 
-			}
-			{
-				isRestCapture = true;
-				StopCaptureVideo();
-			}
+                    this.LoadModel(isRestCapture);
 
-			this._modelName = this.jiangjunButton.name;
-			this.LoadingTip(true, this._modelName);
-			bool flag = this._curSwapFaceHead == null;
-			if (flag)
-			{
-				ChangeingClothesManager.Instance.StartSwapFace();
-			}
-			else
-			{
-				
-				this.LoadModel(isRestCapture);
-			}
-		});
-		this.gongnvButton.onClick.AddListener(delegate ()
-		{
-			bool isRestCapture = false;//是否需要重新录制  
-			if (_movieTex != null && _movieTex.name == gongnvButton.name)
-			{
-				isRestCapture = false;
+                }
+        };
+        this.jiangjunButton.OnRayClick += () =>
+        {
 
-			}
-			else
-			{
-				isRestCapture = true;
-				StopCaptureVideo();
-			}
+            Debug.Log("将军");
+            bool isRestCapture = false;
+            if (_movieTex != null && _movieTex.name == jiangjunButton.name)
+            {
+                isRestCapture = false;
 
-			this._modelName = this.gongnvButton.name;
-			this.LoadingTip(true, this._modelName);
-			bool flag = this._curSwapFaceHead == null;
-			if (flag)
-			{
-				ChangeingClothesManager.Instance.StartSwapFace();
-			}
-			else
-			{
-				
-				this.LoadModel(isRestCapture);
-			}
-		});
-		this.shinvButton.onClick.AddListener(delegate ()
-		{
-			bool isRestCapture = false;
-			if (_movieTex != null && _movieTex.name == shinvButton.name)
-			{
-				isRestCapture = false;
+            }
+            {
+                isRestCapture = true;
+                StopCaptureVideo();
+            }
 
-			}
-			else
-			{
-				isRestCapture = true;
-				StopCaptureVideo();
-			}
+            this._modelName = this.jiangjunButton.name;
+            this.LoadingTip(true, this._modelName);
+            bool flag = this._curSwapFaceHead == null;
+            if (flag)
+            {
+                ChangeingClothesManager.Instance.StartSwapFace();
+            }
+            else
+            {
 
-			this._modelName = this.shinvButton.name;
-			this.LoadingTip(true, this._modelName);
-			bool flag = this._curSwapFaceHead == null;
-			if (flag)
-			{
-				ChangeingClothesManager.Instance.StartSwapFace();
-			}
-			else
-			{
-				
-				this.LoadModel(isRestCapture);
-			}
-		});
+                this.LoadModel(isRestCapture);
+            }
+		};
+        this.gongnvButton.OnRayClick += () =>
+        {
 
-		closeGameObject.GetComponent<Button>().onClick.AddListener(() => {
+            bool isRestCapture = false;//是否需要重新录制  
+            if (_movieTex != null && _movieTex.name == gongnvButton.name)
+            {
+                isRestCapture = false;
 
-			CleanKinect();
-		});
+            }
+            else
+            {
+                isRestCapture = true;
+                StopCaptureVideo();
+            }
 
-		movieGameObject.GetComponent<Button>().onClick.AddListener(() => {
+            this._modelName = this.gongnvButton.name;
+            this.LoadingTip(true, this._modelName);
+            bool flag = this._curSwapFaceHead == null;
+            if (flag)
+            {
+                ChangeingClothesManager.Instance.StartSwapFace();
+            }
+            else
+            {
 
-			ShowMovie();
-		});
+                this.LoadModel(isRestCapture);
+            }
+		};
+        this.shinvButton.OnRayClick += () =>
+        {
+            bool isRestCapture = false;
+            if (_movieTex != null && _movieTex.name == shinvButton.name)
+            {
+                isRestCapture = false;
+
+            }
+            else
+            {
+                isRestCapture = true;
+                StopCaptureVideo();
+            }
+
+            this._modelName = this.shinvButton.name;
+            this.LoadingTip(true, this._modelName);
+            bool flag = this._curSwapFaceHead == null;
+            if (flag)
+            {
+                ChangeingClothesManager.Instance.StartSwapFace();
+            }
+            else
+            {
+
+                this.LoadModel(isRestCapture);
+            }
+		};
+
+        PhotoBtn.OnRayClick += () =>
+        {
+            PhotoShooter photoShooter = gameObject.GetComponent<PhotoShooter>();
+            if (photoShooter && photoShooter.enabled)
+            {
+                photoShooter.CountdownAndMakePhoto();
+            }
+		};
+        ClosePhotoBtn.OnRayClick += CloseShooterImage;
+
+        ClosePhotoBtn.GetComponent<Button>().onClick.AddListener((CloseShooterImage));
+
+
+		closeGameObject.GetComponent<BaseListeningUI>().OnRayClick = CleanKinect;
+
+		movieGameObject.GetComponent<BaseListeningUI>().OnRayClick = ShowMovie;
 
 		_path = Application.streamingAssetsPath + "/Video/";
 	}
@@ -577,26 +593,34 @@ public class SwapFaceManager : MonoBehaviour
 			}
 		}
 
-		//Debug.Log(path);
+		Debug.Log(path);
 
 		GameObject go = Resources.Load<GameObject>(path);
 		GameObject temp = Object.Instantiate<GameObject>(go);
 		this._curModelData = temp.GetComponent<ModelData>();
-		this._curModelData.SetHead(this._curSwapFaceHead, targetPos,time);
-		if (isRestCapture)
-		{
-			_coroutineCapture = StartCoroutine(StartCaptureVideo(time + 3f));
-			allTime = time + 3 + 3;
-		}
-		else
+        if (_curModelData == null)
         {
-			allTime = -1f;
-			
+			Debug.LogError("加载的模型获取不到数据");
+        }
+        else
+        {
+			this._curModelData.SetHead(this._curSwapFaceHead, targetPos, time);
+            if (isRestCapture)
+            {
+                _coroutineCapture = StartCoroutine(StartCaptureVideo(time + 3f));
+                allTime = time + 3 + 3;
+            }
+            else
+            {
+                allTime = -1f;
+
+            }
+
+            this.LoadingTip(false, null);
+            //提示录制视频，时间是time +3  +3  3为站立动画   3位转码所用的大概时间
 		}
 
-		this.LoadingTip(false, null);
-		//提示录制视频，时间是time +3  +3  3为站立动画   3位转码所用的大概时间
-		
+
 
 	}
 
@@ -623,6 +647,8 @@ public class SwapFaceManager : MonoBehaviour
 			this.ShowOtherBtn(true);
 			this._curSwapFaceHead = headGameObject;
 			this.LoadModel(true);
+			MyInternaction.Instance.EnableHand(false,0.1f,true);
+
 		}
 	}
 
