@@ -48,82 +48,71 @@ public class NetManager : MonoBehaviour
 	// Token: 0x06000657 RID: 1623 RVA: 0x000460E0 File Offset: 0x000442E0
 	public void SendMessage(byte[] messageBytes)
 	{
-		int port = 6000;
-		string host = GlobalSettings.ServerIp;
-		bool flag = messageBytes == null || messageBytes.Length == 0;
-		UnityEngine.Debug.LogError("server ip is " + GlobalSettings.ServerIp);
-		if (flag)
-		{
-			throw new UnityException("没能完整的读取到图片");
-		}
-		try
-		{
-			
-			int count = 0;
-			this._thread = new Thread(delegate ()
-			{
-
-                IPAddress ip = IPAddress.Parse(host);
-                IPEndPoint ipe = new IPEndPoint(ip, port);
-                this._clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                this._clientSocket.Connect(ipe);
-                this._clientSocket.Send(messageBytes);
-                Debug.Log("发送成功" + " Length is " + messageBytes.Length);
-
-				int i = 0;
-				MemoryStream ms = new MemoryStream();
-				for (; ; )
-				{
-					bool flag2 = this._clientSocket != null;
-
-					
-					if (flag2)
-					{
-						try
-						{
-							bool flag3 = !this._clientSocket.Connected;
-							if (flag3)
-							{
-								this.CloseMessage(ms);
-                                UnityEngine.Debug.LogError("服务器主动断开");
-								break;
-							}
-							byte[] recByte = new byte[2097152];
-							int bytes = this._clientSocket.Receive(recByte, recByte.Length, SocketFlags.None);
-							i++;
-							bool flag4 = bytes > 0;
-							if (flag4)
-							{
-								
-								count++;
-                                UnityEngine.Debug.LogError("共接收了 " + count + "次容量");
-							}
-							ms.Write(recByte, 0, bytes);
-							bool flag5 = i >= 20;
-							if (flag5)
-							{
-								this.CloseMessage(ms);
-								break;
-							}
-						}
-						catch (Exception e2)
-						{
-							UnityEngine.Debug.LogError("接收错误 " + e2.ToString());
-							this.CloseMessage(ms);
-							break;
-						}
-					}
-				}
-			});
-			Thread.Sleep(100);
-			this._thread.Start();
-
-		}
-		catch (Exception e)
-		{
-			UnityEngine.Debug.LogError(e.ToString());
-			this.CloseMessage(null);
-		}
+        int port = 6000;
+        string serverIp = GlobalSettings.ServerIp;
+        bool flag = messageBytes == null || messageBytes.Length == 0;
+        Debug.LogError("server ip is " + GlobalSettings.ServerIp);
+        if (flag)
+        {
+            throw new UnityException("没能完整的读取到图片");
+        }
+        try
+        {
+            IPEndPoint remoteEP = new IPEndPoint(IPAddress.Parse(serverIp), port);
+            this._clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            this._clientSocket.Connect(remoteEP);
+            this._clientSocket.Send(messageBytes);
+            int count = 0;
+            this._thread = new Thread(delegate ()
+            {
+                int num = 0;
+                MemoryStream memoryStream = new MemoryStream();
+                for (; ; )
+                {
+                    if (this._clientSocket != null)
+                    {
+                        try
+                        {
+                            if (!this._clientSocket.Connected)
+                            {
+                                this.CloseMessage(memoryStream);
+                                Debug.LogError("服务器主动断开");
+                            }
+                            else
+                            {
+                                byte[] array = new byte[2097152];
+                                int num2 = this._clientSocket.Receive(array, array.Length, SocketFlags.None);
+                                num++;
+                                if (num2 > 0)
+                                {
+                                   
+                                    count++;
+                                    Debug.LogError("共接收了 " + count + "次容量");
+                                }
+                                memoryStream.Write(array, 0, num2);
+                                if (num < 20)
+                                {
+                                    continue;
+                                }
+                                this.CloseMessage(memoryStream);
+                            }
+                        }
+                        catch (Exception ex2)
+                        {
+                            Debug.LogError("接收错误 " + ex2.ToString());
+                            this.CloseMessage(memoryStream);
+                        }
+                        break;
+                    }
+                }
+            });
+            this._thread.Start();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError(ex.ToString());
+            this.CloseMessage(null);
+        }
 	}
 
 	// Token: 0x06000658 RID: 1624 RVA: 0x000461B8 File Offset: 0x000443B8

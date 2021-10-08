@@ -162,10 +162,11 @@ public class ChangeingClothesManager : MonoBehaviour
 			this.userBodyBlender.ChangeBackGround(-1);
 			this.StopComputeStandby();
 			this.CheckBodyHeight();
+            MyInternaction.Instance.EnableHand(true, 1f, true);
 			this.GetHeadImage(obj);
 			this.swapFaceManager.ShowRoleUi(true, obj);
 			this._curId = obj;
-            MyInternaction.Instance.EnableHand(true,1f,true);
+           
 		}
 	}
 
@@ -639,51 +640,38 @@ public class ChangeingClothesManager : MonoBehaviour
 	// Token: 0x0600060B RID: 1547 RVA: 0x000441DC File Offset: 0x000423DC
 	private void GetHeadImage(long obj)
 	{
-		Rect backgroundRect = this.mainCamera.pixelRect;
-		PortraitBackground portraitBack = PortraitBackground.Instance;
-		bool flag = portraitBack && portraitBack.enabled;
-		if (flag)
-		{
-			backgroundRect = portraitBack.GetBackgroundRect();
-		}
-		Vector3 pos = KinectManager.Instance.GetJointPosColorOverlay(obj, 3, this.mainCamera, backgroundRect);
-		Vector3 screenPos = this.mainCamera.WorldToScreenPoint(pos);
-		//Debug.Log(string.Concat(new object[]
-		//{
-		//	"screenPos  ",
-		//	screenPos,
-		//	"   Screen.width is",
-		//	Screen.width
-		//}));
-		Rect rect = Rect.zero;
-		bool flag2 = this.ShotHeadImage == null;
-		if (!flag2)
-		{
-			bool flag3 = screenPos.x + this.ShotWidth / 2f > (float)Screen.width || screenPos.y + this.ShotHeight / 2f > (float)Screen.height;
-			if (flag3)
-			{
-				bool flag4 = this._coroutine != null;
-				if (flag4)
-				{
-					base.StopCoroutine(this._coroutine);
-				}
-				this._coroutine = base.StartCoroutine(this.WaitTime(1f, delegate
-				{
-					this.AddingUserEvent(obj);
-				}));
-				Debug.Log("重新开始截图头像");
-			}
-			else
-			{
-				rect = new Rect(screenPos.x - this.ShotWidth / 2f, screenPos.y - this.ShotHeight / 2f, this.ShotWidth, this.ShotHeight);
-				bool flag5 = this._coroutine != null;
-				if (flag5)
-				{
-					base.StopCoroutine(this._coroutine);
-				}
-				this._coroutine = base.StartCoroutine(this.CaptureScreenshot2(rect));
-			}
-		}
+
+        Rect imageRect = this.mainCamera.pixelRect;
+        PortraitBackground instance = PortraitBackground.Instance;
+        if (instance && instance.enabled)
+        {
+            imageRect = instance.GetBackgroundRect();
+        }
+        Vector3 jointPosColorOverlay = KinectManager.Instance.GetJointPosColorOverlay(obj, 3, this.mainCamera, imageRect);
+        Vector3 vector = this.mainCamera.WorldToScreenPoint(jointPosColorOverlay);
+        Rect zero = Rect.zero;
+        if (!(this.ShotHeadImage == null))
+        {
+            if (vector.x + this.ShotWidth / 2f > (float)Screen.width || vector.y + this.ShotHeight / 2f > (float)Screen.height)
+            {
+                if (this._coroutine != null)
+                {
+                    base.StopCoroutine(this._coroutine);
+                }
+                this._coroutine = base.StartCoroutine(this.WaitTime(1f, delegate
+                {
+                    this.AddingUserEvent(obj);
+                }));
+                Debug.Log("重新开始截图头像");
+                return;
+            }
+            zero = new Rect(vector.x - this.ShotWidth / 2f, vector.y - this.ShotHeight / 2f, this.ShotWidth, this.ShotHeight);
+            if (this._coroutine != null)
+            {
+                base.StopCoroutine(this._coroutine);
+            }
+            this._coroutine = base.StartCoroutine(this.CaptureScreenshot2(zero));
+        }
 	}
 
 	// Token: 0x0600060C RID: 1548 RVA: 0x000443A9 File Offset: 0x000425A9
