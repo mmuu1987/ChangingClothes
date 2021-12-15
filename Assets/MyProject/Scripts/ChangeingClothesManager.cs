@@ -164,7 +164,7 @@ public class ChangeingClothesManager : MonoBehaviour
 			this.CheckBodyHeight();
             MyInternaction.Instance.EnableHand(true, 1f, true);
 			this.GetHeadImage(obj);
-			this.swapFaceManager.ShowRoleUi(true, obj);
+			
 			this._curId = obj;
            
 		}
@@ -633,6 +633,8 @@ public class ChangeingClothesManager : MonoBehaviour
 	// Token: 0x0600060A RID: 1546 RVA: 0x000441C8 File Offset: 0x000423C8
 	public void StartSwapFace()
     {
+		//if(this.LoadingTipUI.gameObject)
+		
         MyInternaction.Instance.EnableHand(false,0f,false);
 		NetManager.Instance.SendFaceDataMessage(this._screenShot);
 	}
@@ -691,6 +693,10 @@ public class ChangeingClothesManager : MonoBehaviour
 		{
 			base.StopCoroutine(this._coroutine);
 		}
+        this.swapFaceManager.ShowRoleUi(true, _curId);
+		byte[] bytes = _screenShot.EncodeToPNG();
+
+		//File.WriteAllBytes(Application.streamingAssetsPath+"/head.png",bytes);
 		yield break;
 	}
 

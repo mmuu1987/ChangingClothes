@@ -289,7 +289,7 @@ public class MyInternaction : MonoBehaviour
         _isEnableHand = isEnable;
 
         
-            SetMouseImageAlpha(alpha);
+        SetMouseImageAlpha(alpha);
        
         // MouseLeftImage.gameObject.SetActive(isEnable);
        // MouseRightImage.gameObject.SetActive(isEnable);

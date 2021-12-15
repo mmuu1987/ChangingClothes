@@ -383,7 +383,9 @@ public class SwapFaceManager : MonoBehaviour
 	{
 		this.CloseTipUI();
 		StopCaptureVideo();
-	}
+        CloseShooterImage(); 
+		
+    }
 
 	// Token: 0x06000670 RID: 1648 RVA: 0x00046829 File Offset: 0x00044A29
 	private void ShowOtherBtn(bool isShow)
@@ -453,7 +455,8 @@ public class SwapFaceManager : MonoBehaviour
 	// Token: 0x06000676 RID: 1654 RVA: 0x000469D4 File Offset: 0x00044BD4  
 	public void LoadingTip(bool isShow, string str = null)
 	{
-		this.ShowLogo(false);
+        this.ShowLogo(false);
+		this.UIroot.gameObject.SetActive(!isShow);
 		Text text = this.LoadingTipUI.transform.Find("Image/Text").GetComponent<Text>();
 		bool flag = str != null;
 		if (flag)
